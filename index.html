@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SAWT — Sound-Aligned Writing Technique. An original shorthand system built from consonant skeletons, compact sound marks and rapid modifiers." />
+  <meta name="theme-color" content="#090b0f" />
+  <meta name="color-scheme" content="dark light" />
+  <title>SAWT — Sound-Aligned Writing Technique</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="page-noise" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#home" aria-label="SAWT home">
+      <span class="brand-glyph" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <path d="M8 31C16 16 27 13 40 20" />
+          <path d="M10 35H38" />
+          <path d="M24 8V15" />
+        </svg>
+      </span>
+      <span class="brand-copy"><b>SAWT</b><small>sound-aligned writing</small></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#method">Method</a>
+      <a href="#sounds">Sound map</a>
+      <a href="#studio">Studio</a>
+      <a href="#origin">Origin</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.4A8 8 0 1 1 8.6 3.6a6.5 6.5 0 0 0 11.8 11.8Z"/></svg>
+      </button>
+      <a class="header-cta" href="#studio">Try SAWT</a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+
+    <div class="mobile-menu" aria-hidden="true">
+      <a href="#method">Method</a>
+      <a href="#sounds">Sound map</a>
+      <a href="#studio">Studio</a>
+      <a href="#origin">Origin</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-ambient ambient-one" aria-hidden="true"></div>
+      <div class="hero-ambient ambient-two" aria-hidden="true"></div>
+
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="release-pill reveal">
+            <span class="pulse-dot"></span>
+            <span>Original shorthand system</span>
+            <b>Digital Edition 0.5</b>
+          </div>
+
+          <h1 class="hero-title reveal">
+            Write what<br />
+            <span class="gradient-text">the ear hears.</span>
+          </h1>
+
+          <p class="hero-lead reveal">
+            <strong>SAWT</strong> — <em>Sound-Aligned Writing Technique</em> — compresses words into a consonant skeleton, a tiny sound mark and an optional modifier. Built from your handwritten system; extended without overwriting it.
+          </p>
+
+          <div class="hero-actions reveal">
+            <a class="button button-primary" href="#studio">
+              <span>Open Shorthand Studio</span>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 6l4 4-4 4"/></svg>
+            </a>
+            <a class="button button-secondary" href="#sounds">Explore sound map</a>
+          </div>
+
+          <div class="hero-metrics reveal" aria-label="SAWT summary">
+            <div><strong data-counter="3">3</strong><span>core layers</span></div>
+            <div><strong data-counter="12">12</strong><span>observed marks</span></div>
+            <div><strong data-counter="13">13</strong><span>proposed additions</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="Animated SAWT shorthand composition">
+          <div class="visual-window tilt-card">
+            <div class="window-bar">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <span>SAWT / live notation</span>
+              <span class="window-status"><i></i> system online</span>
+            </div>
+            <div class="visual-stage">
+              <span class="axis-label axis-y">SOUND</span>
+              <span class="axis-label axis-x">STROKE</span>
+              <svg class="hero-glyph" viewBox="0 0 720 460" aria-hidden="true">
+                <defs>
+                  <linearGradient id="heroLine" x1="0" x2="1">
+                    <stop offset="0" stop-color="#71e5ff"/>
+                    <stop offset=".5" stop-color="#a586ff"/>
+                    <stop offset="1" stop-color="#f4c86a"/>
+                  </linearGradient>
+                </defs>
+                <path class="grid-path" d="M60 110H660M60 230H660M60 350H660"/>
+                <path class="glyph-path" d="M105 290C176 165 270 150 352 205C427 255 480 251 607 172"/>
+                <path class="glyph-path glyph-secondary" d="M112 319C246 328 410 326 603 313"/>
+                <path class="glyph-path glyph-small" d="M353 115V168"/>
+                <path class="glyph-path glyph-small" d="M492 128C472 101 446 103 427 129"/>
+                <circle class="glyph-node" cx="250" cy="133" r="8"/>
+              </svg>
+
+              <div class="floating-token token-a"><small>vowel</small><b>AY</b><span>/eɪ/</span></div>
+              <div class="floating-token token-b"><small>modifier</small><b>+ING</b><span>/ɪŋ/</span></div>
+              <div class="floating-token token-c"><small>sound</small><b>AE</b><span>/æ/</span></div>
+            </div>
+            <div class="visual-footer">
+              <div><span>formula</span><b>Skeleton + Anchored Tone + Modifier</b></div>
+              <div><span>goal</span><b>minimum hand travel</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>SOUND FIRST</span><i>•</i><span>LESS INK</span><i>•</i><span>FASTER RECALL</span><i>•</i><span>ONE GESTURE AT A TIME</span><i>•</i>
+          <span>SOUND FIRST</span><i>•</i><span>LESS INK</span><i>•</i><span>FASTER RECALL</span><i>•</i><span>ONE GESTURE AT A TIME</span><i>•</i>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="method">
+      <div class="section-kicker reveal"><span>01</span> THE METHOD</div>
+      <div class="section-heading split reveal">
+        <h2>Three decisions.<br />One compact form.</h2>
+        <p>SAWT does not try to redraw English letter-for-letter. It asks what has to survive for the word to remain recognisable at speed.</p>
+      </div>
+
+      <div class="method-grid">
+        <article class="method-card reveal">
+          <div class="method-index">01</div>
+          <div class="method-demo consonant-demo" aria-hidden="true"><span>T</span><span>R</span></div>
+          <div class="method-copy"><span class="eyebrow">Keep</span><h3>Consonant skeleton</h3><p>Strip the word to the consonants carrying its identity. Silent and predictable spelling can disappear.</p></div>
+          <div class="code-strip"><span>TRY</span><i>→</i><b>TR</b></div>
+        </article>
+
+        <article class="method-card reveal">
+          <div class="method-index">02</div>
+          <div class="method-demo sound-demo" aria-hidden="true"><span class="demo-letter">C</span><span class="demo-caret"></span></div>
+          <div class="method-copy"><span class="eyebrow">Encode</span><h3>Sound mark</h3><p>Replace the vowel sound with one compact tone attached to the consonant it belongs to. The tone is drawn above that letter.</p></div>
+          <div class="code-strip"><span>CAT</span><i>→</i><b>C[AE]T</b></div>
+        </article>
+
+        <article class="method-card reveal">
+          <div class="method-index">03</div>
+          <div class="method-demo modifier-demo" aria-hidden="true">+</div>
+          <div class="method-copy"><span class="eyebrow">Finish</span><h3>Modifier</h3><p>Frequent endings collapse into one gesture, so the pen never loses rhythm.</p></div>
+          <div class="code-strip"><span>TRYING</span><i>→</i><b>TR[AI]ING → TR[AI]+</b></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section sound-section" id="sounds">
+      <div class="shell">
+        <div class="section-kicker reveal"><span>02</span> SOUND MAP</div>
+        <div class="section-heading split reveal">
+          <h2>The original marks,<br />with room to evolve.</h2>
+          <p>The photographed marks are preserved as <strong>Observed</strong>. Vowel tones are shown attached above a sample consonant, matching the placement rule in your word examples. Missing English sounds remain <strong>Proposed</strong>.</p>
+        </div>
+
+        <div class="sound-toolbar reveal">
+          <div class="filter-tabs" role="tablist" aria-label="Filter sound marks">
+            <button class="filter-tab active" type="button" data-filter="all">All marks</button>
+            <button class="filter-tab" type="button" data-filter="observed">Observed</button>
+            <button class="filter-tab" type="button" data-filter="proposed">Proposed</button>
+            <button class="filter-tab" type="button" data-filter="modifier">Modifiers</button>
+          </div>
+          <label class="sound-search">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="m13 13 4 4"/></svg>
+            <input id="sound-search" type="search" placeholder="Search sound or example…" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="sound-grid" id="sound-grid" aria-live="polite"></div>
+        <p class="sound-empty" id="sound-empty" hidden>No marks match that search.</p>
+
+        <div class="extension-callout reveal">
+          <div class="callout-icon" aria-hidden="true">
+            <svg viewBox="0 0 44 44"><path d="M22 5v34M5 22h34"/><circle cx="22" cy="22" r="17"/></svg>
+          </div>
+          <div><span>Extension rule</span><h3>New sounds should cost one tiny gesture.</h3><p>Each proposal is designed to remain visually distinct at writing speed. Accent-sensitive sounds can be merged later if you want SAWT to optimize for Indian English rather than a broad English phoneme inventory.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell examples-section">
+      <div class="section-kicker reveal"><span>03</span> COMPRESSION</div>
+      <div class="section-heading split reveal">
+        <h2>See the logic<br />before the symbol.</h2>
+        <p>These examples use forms visible in the notebook and make the construction sequence explicit.</p>
+      </div>
+
+      <div class="placement-rule reveal">
+        <div class="placement-rule-code"><span>Teaching notation</span><b>TR[AY]</b></div>
+        <div class="placement-rule-arrow">→</div>
+        <div class="placement-rule-copy"><strong>AY belongs to R.</strong><p>Write the AY tone directly above <b>R</b>. The brackets and the letters “AY” are only documentation — they do not appear in the finished shorthand.</p></div>
+      </div>
+
+      <div class="examples-list">
+        <article class="example-item reveal" data-word="TRAY">
+          <div class="example-word"><span>01</span><h3>TRAY</h3></div>
+          <div class="example-flow"><b>TR[AY]</b><i>→</i><strong class="example-glyph" data-skeleton="TR" data-tone="AY" data-anchor="1"></strong></div>
+          <p>The AY tone is the grave/down-sloping stroke shown above R in your TRAY example.</p>
+        </article>
+        <article class="example-item reveal" data-word="CAT">
+          <div class="example-word"><span>02</span><h3>CAT</h3></div>
+          <div class="example-flow"><b>C[AE]T</b><i>→</i><strong class="example-glyph" data-skeleton="CT" data-tone="AE" data-anchor="0"></strong></div>
+          <p>AE is attached to C, so the caret-like tone is drawn above C.</p>
+        </article>
+        <article class="example-item reveal" data-word="DOG">
+          <div class="example-word"><span>03</span><h3>DOG</h3></div>
+          <div class="example-flow"><b>D[AO]G</b><i>→</i><strong class="example-glyph" data-skeleton="DG" data-tone="AO" data-anchor="0"></strong></div>
+          <p>AO is attached to D, so its vee-shaped tone is drawn above D.</p>
+        </article>
+        <article class="example-item reveal" data-word="TRYING">
+          <div class="example-word"><span>04</span><h3>TRYING</h3></div>
+          <div class="example-flow"><b>TR[AI]ING</b><i>→</i><b>TR[AI]+</b><i>→</i><strong class="example-glyph" data-skeleton="TR" data-tone="AI" data-anchor="1" data-modifier="-ING"></strong></div>
+          <p>TRYING uses the <b>AI</b> tone, not AY. AI is attached to R, so the AI tone is written above <b>R</b>; the existing <b>+</b> symbol then replaces the -ING ending.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="studio-section" id="studio">
+      <div class="studio-glow" aria-hidden="true"></div>
+      <div class="shell">
+        <div class="section-kicker light reveal"><span>04</span> SHORTHAND STUDIO</div>
+        <div class="section-heading split light reveal">
+          <h2>Compose a form.<br />See it live.</h2>
+          <p>This studio is intentionally manual: pronunciation decides the sound, then you choose the consonant that carries its tone. The finished SAWT form draws that tone directly above the selected letter.</p>
+        </div>
+
+        <div class="studio-grid reveal">
+          <form class="composer" id="composer" autocomplete="off">
+            <div class="field-group">
+              <label for="skeleton">Consonant skeleton</label>
+              <div class="text-field"><input id="skeleton" type="text" value="TR" maxlength="12" spellcheck="false" /><span>letters</span></div>
+            </div>
+
+            <div class="field-group">
+              <label for="tone-select">Sound mark</label>
+              <div class="select-wrap"><select id="tone-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
+            </div>
+
+            <div class="field-group">
+              <label for="anchor-select">Tone anchor</label>
+              <div class="select-wrap"><select id="anchor-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
+            </div>
+
+            <div class="field-group">
+              <label for="modifier-select">Modifier</label>
+              <div class="select-wrap"><select id="modifier-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
+            </div>
+
+            <div class="preset-group">
+              <span>Quick examples</span>
+              <div class="preset-row">
+                <button type="button" data-preset="tray">TRAY</button>
+                <button type="button" data-preset="cat">CAT</button>
+                <button type="button" data-preset="dog">DOG</button>
+                <button type="button" data-preset="trying">TRYING</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="preview-panel">
+            <div class="preview-head"><span>Live construction</span><b id="preview-formula">TR[AY]</b></div>
+            <div class="glyph-canvas" id="glyph-canvas" aria-live="polite"></div>
+            <div class="preview-meta">
+              <div><span>Skeleton</span><b id="meta-skeleton">TR</b></div>
+              <div><span>Sound</span><b id="meta-sound">AY /eɪ/</b></div>
+              <div><span>Anchor</span><b id="meta-anchor">R · letter 2</b></div>
+              <div><span>Modifier</span><b id="meta-modifier">None</b></div>
+            </div>
+            <div class="preview-actions">
+              <button class="studio-button" id="copy-formula" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="2"/><path d="M5 13H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"/></svg>Copy formula</button>
+              <button class="studio-button primary" id="export-svg" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v11M6 9l4 4 4-4M3 17h14"/></svg>Export SVG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell origin-section" id="origin">
+      <div class="section-kicker reveal"><span>05</span> ORIGIN</div>
+      <div class="section-heading split reveal">
+        <h2>Started on a board.<br />Now becoming a system.</h2>
+        <p>These are the source iterations you worked through. The digital version uses them as evidence, not decoration: anything uncertain stays unverified until you confirm the intended mark.</p>
+      </div>
+
+      <div class="origin-grid">
+        <button class="origin-card large reveal" type="button" data-image="assets/origin-01.jpg" aria-label="Open first shorthand source image">
+          <img src="assets/origin-01.jpg" alt="Original SAWT shorthand notes, first iteration" />
+          <span class="origin-overlay"><b>Iteration 01</b><small>expanded notation sheet</small></span>
+        </button>
+        <button class="origin-card reveal" type="button" data-image="assets/origin-02.jpg" aria-label="Open second shorthand source image">
+          <img src="assets/origin-02.jpg" alt="Original SAWT shorthand notes, second iteration" />
+          <span class="origin-overlay"><b>Iteration 02</b><small>core word examples</small></span>
+        </button>
+        <button class="origin-card reveal" type="button" data-image="assets/origin-03.jpg" aria-label="Open third shorthand source image">
+          <img src="assets/origin-03.jpg" alt="Original SAWT shorthand notes, third iteration" />
+          <span class="origin-overlay"><b>Iteration 03</b><small>tone mark refinement</small></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="section shell roadmap-section">
+      <div class="roadmap-card reveal">
+        <div class="roadmap-top">
+          <div><span class="section-kicker compact"><span>06</span> NEXT</span><h2>From personal shorthand<br />to a real writing system.</h2></div>
+          <span class="version-badge">Roadmap → 1.0</span>
+        </div>
+        <div class="roadmap-grid">
+          <div class="roadmap-item done"><i></i><span>01</span><h3>Digitize the source</h3><p>Separate observed marks from proposals.</p></div>
+          <div class="roadmap-item active"><i></i><span>02</span><h3>Lock the sound inventory</h3><p>Approve, merge or reject the extension marks.</p></div>
+          <div class="roadmap-item active"><i></i><span>03</span><h3>Lock tone grammar</h3><p>Tones now anchor above their consonant; next define multi-tone and collision rules.</p></div>
+          <div class="roadmap-item"><i></i><span>04</span><h3>Build the dictionary</h3><p>Publish canonical forms and collision rules.</p></div>
+          <div class="roadmap-item"><i></i><span>05</span><h3>Create SAWT 1.0</h3><p>Font, keyboard, trainer and formal specification.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#home"><span class="brand-glyph" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 31C16 16 27 13 40 20"/><path d="M10 35H38"/><path d="M24 8V15"/></svg></span><span class="brand-copy"><b>SAWT</b><small>sound-aligned writing</small></span></a>
+        <p>An original shorthand concept evolving from handwritten experimentation into a documented digital system.</p>
+      </div>
+      <div class="footer-links"><span>Explore</span><a href="#method">Method</a><a href="#sounds">Sound map</a><a href="#studio">Studio</a><a href="#origin">Origin</a></div>
+      <div class="footer-note"><span>Edition</span><b>Digital 0.5</b><p>Observed and proposed notation are intentionally kept separate.</p></div>
+    </div>
+    <div class="shell footer-bottom"><span>SAWT — Sound-Aligned Writing Technique</span><span>Built as a living specification.</span></div>
+  </footer>
+
+  <dialog class="image-dialog" id="image-dialog">
+    <button class="dialog-close" type="button" aria-label="Close image">×</button>
+    <img id="dialog-image" src="" alt="Expanded shorthand source" />
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
