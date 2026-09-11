@@ -8,9 +8,11 @@
   <meta name="color-scheme" content="dark light" />
   <title>SAWT — Sound-Aligned Writing Technique</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="sentence-converter.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
   <script defer src="app.js"></script>
+  <script defer src="sentence-converter.js"></script>
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -63,7 +65,7 @@
           <div class="release-pill reveal">
             <span class="pulse-dot"></span>
             <span>Original shorthand system</span>
-            <b>Digital Edition 0.5</b>
+            <b>Digital Edition 0.6</b>
           </div>
 
           <h1 class="hero-title reveal">
@@ -240,58 +242,72 @@
     <section class="studio-section" id="studio">
       <div class="studio-glow" aria-hidden="true"></div>
       <div class="shell">
-        <div class="section-kicker light reveal"><span>04</span> SHORTHAND STUDIO</div>
+        <div class="section-kicker light reveal"><span>04</span> SENTENCE CONVERTER</div>
         <div class="section-heading split light reveal">
-          <h2>Compose a form.<br />See it live.</h2>
-          <p>This studio is intentionally manual: pronunciation decides the sound, then you choose the consonant that carries its tone. The finished SAWT form draws that tone directly above the selected letter.</p>
+          <h2>Type a sentence.<br />Read it in SAWT.</h2>
+          <p>The old word builder let unrelated skeletons and sound marks be combined manually. This converter removes that mistake: you type normal English and SAWT decides the word structure, tone anchors and modifiers as a complete sentence.</p>
         </div>
 
-        <div class="studio-grid reveal">
-          <form class="composer" id="composer" autocomplete="off">
-            <div class="field-group">
-              <label for="skeleton">Consonant skeleton</label>
-              <div class="text-field"><input id="skeleton" type="text" value="TR" maxlength="12" spellcheck="false" /><span>letters</span></div>
+        <div class="sentence-converter reveal">
+          <div class="converter-input-panel">
+            <div class="converter-input-head">
+              <label for="sentence-input">English sentence</label>
+              <span class="converter-shortcut">Ctrl / ⌘ + Enter to convert</span>
             </div>
+            <textarea id="sentence-input" class="sentence-field" rows="4" maxlength="600" spellcheck="true" placeholder="Type a sentence in English…"></textarea>
 
-            <div class="field-group">
-              <label for="tone-select">Sound mark</label>
-              <div class="select-wrap"><select id="tone-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
-            </div>
+            <div class="converter-controls">
+              <button class="converter-button primary" id="convert-sentence" type="button">Convert to SAWT</button>
+              <button class="converter-button" id="clear-sentence" type="button">Clear</button>
 
-            <div class="field-group">
-              <label for="anchor-select">Tone anchor</label>
-              <div class="select-wrap"><select id="anchor-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
-            </div>
-
-            <div class="field-group">
-              <label for="modifier-select">Modifier</label>
-              <div class="select-wrap"><select id="modifier-select"></select><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></div>
-            </div>
-
-            <div class="preset-group">
-              <span>Quick examples</span>
-              <div class="preset-row">
-                <button type="button" data-preset="tray">TRAY</button>
-                <button type="button" data-preset="cat">CAT</button>
-                <button type="button" data-preset="dog">DOG</button>
-                <button type="button" data-preset="trying">TRYING</button>
+              <div class="converter-examples" aria-label="Sentence examples">
+                <button type="button" data-sentence-example="The cat and dog are trying SAWT.">Cat + dog</button>
+                <button type="button" data-sentence-example="Write what the ear hears.">Write what you hear</button>
+                <button type="button" data-sentence-example="Try the SAWT shorthand system.">Try SAWT</button>
               </div>
             </div>
-          </form>
+          </div>
 
-          <div class="preview-panel">
-            <div class="preview-head"><span>Live construction</span><b id="preview-formula">TR[AY]</b></div>
-            <div class="glyph-canvas" id="glyph-canvas" aria-live="polite"></div>
-            <div class="preview-meta">
-              <div><span>Skeleton</span><b id="meta-skeleton">TR</b></div>
-              <div><span>Sound</span><b id="meta-sound">AY /eɪ/</b></div>
-              <div><span>Anchor</span><b id="meta-anchor">R · letter 2</b></div>
-              <div><span>Modifier</span><b id="meta-modifier">None</b></div>
+          <div class="converter-output-panel">
+            <div class="converter-output-head">
+              <span>SAWT sentence</span>
+              <div class="converter-stats" aria-label="Conversion statistics">
+                <div><b id="converter-word-count">0</b><small>words</small></div>
+                <div><b id="converter-canonical-count">0</b><small>notebook</small></div>
+                <div><b id="converter-estimated-count">0</b><small>estimated</small></div>
+              </div>
             </div>
-            <div class="preview-actions">
-              <button class="studio-button" id="copy-formula" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="2"/><path d="M5 13H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"/></svg>Copy formula</button>
-              <button class="studio-button primary" id="export-svg" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v11M6 9l4 4 4-4M3 17h14"/></svg>Export SVG</button>
+
+            <div class="sentence-glyph-stage" id="sentence-glyph-line" aria-live="polite"></div>
+            <p class="converter-empty" id="converter-empty" hidden>Type a sentence above to begin.</p>
+
+            <div class="converter-notation-row">
+              <span>Teaching notation</span>
+              <code id="sentence-notation"></code>
+              <button class="studio-button" id="copy-sentence-notation" type="button">Copy notation</button>
             </div>
+
+            <div class="converter-action-row">
+              <button class="studio-button" id="toggle-analysis" type="button" aria-expanded="false">Show word analysis</button>
+              <button class="studio-button primary" id="export-sentence-svg" type="button">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v11M6 9l4 4 4-4M3 17h14"/></svg>
+                Export sentence SVG
+              </button>
+            </div>
+          </div>
+
+          <div class="converter-confidence">
+            <span>◈</span>
+            <div><b>Notebook forms stay exact.</b> TRAY, CAT, DOG, TRY, TRYING and the observed voiced-TH rule are treated as canonical. Other words are converted by the current spelling-to-sound rules and visibly marked <b>Estimated</b> until the SAWT dictionary is formally approved.</div>
+          </div>
+
+          <button class="converter-analysis-toggle" id="toggle-analysis-mobile" type="button" hidden aria-hidden="true">Word analysis</button>
+
+          <div class="converter-analysis-wrap" id="sentence-analysis-wrap" hidden>
+            <div class="converter-analysis-head">
+              <span>Word-by-word construction</span>
+            </div>
+            <div class="converter-analysis" id="sentence-analysis"></div>
           </div>
         </div>
       </div>
