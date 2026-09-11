@@ -394,7 +394,7 @@ function init() {
   buildSoundCards(soundData);
   renderExampleGlyphs();
   setupSoundFilter();
-  setupComposer();
+  setupSentenceConverter();
   setupTheme();
   setupMenu();
   setupGallery();
