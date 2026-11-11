@@ -86,7 +86,7 @@ function renderStories(){
   $("#story-grid").innerHTML=STORIES.map((s,i)=>
     '<article class="story-card">'+
       '<div class="story-card-head"><span class="story-icon">'+icons[i%icons.length]+'</span><span class="story-tag">'+escapeHTML(s.tag)+'</span></div>'+
-      '<h3>'+escapeHTML(s.title)+'</h3><p>'+escapeHTML(s.text)+'</p>'+
+      '<h3>'+escapeHTML(s.title)+'</h3><p>'+escapeHTML(s.text)+'</p>'+ '<div class="story-sawt"><span>SAWT PRACTICE NOTATION · UNVERIFIED WORDS MAY BE ESTIMATED</span><code>'+escapeHTML(convertText(s.text,options,custom).map(teachingForm).join(""))+'</code></div>'+
       '<div class="story-footer"><small>'+convertText(s.text,options,custom).filter(x=>x.kind==="word").length+' words to practice</small>'+
       '<button class="story-load" data-story="'+escapeHTML(s.id)+'" type="button">Read in SAWT ↗</button></div>'+
     '</article>'
