@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+<title id="title">SAWT icon</title>
+<desc id="desc">A stylized flowing sound stroke with a curved vowel tone above it</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#49306a"/><stop offset=".56" stop-color="#26183e"/><stop offset="1" stop-color="#171022"/></linearGradient>
+ <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e3c6ff"/><stop offset=".52" stop-color="#bb8df8"/><stop offset="1" stop-color="#8f7be3"/></linearGradient>
+ <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect x="1" y="1" width="94" height="94" rx="23" fill="url(#bg)" stroke="#72538c" stroke-width="1.4"/>
+<path d="M23 24Q50 5 74 24" fill="none" stroke="#bb93ff" stroke-width="5" stroke-linecap="round" opacity=".34" filter="url(#glow)"/>
+<path d="M29 24Q49 12 68 24" fill="none" stroke="#edceff" stroke-width="4" stroke-linecap="round"/>
+<path d="M69 33C60 25 42 24 33 31C23 39 31 49 46 51C67 54 73 64 62 73C52 81 35 78 27 70" fill="none" stroke="url(#ink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M69 33C64 36 58 36 56 32" stroke="#e4c2ff" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+<circle cx="73" cy="73" r="3" fill="#f4d49b"/>
+</svg>
