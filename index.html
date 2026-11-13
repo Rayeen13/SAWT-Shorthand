@@ -153,7 +153,26 @@
               <button class="utility-button highlighted" id="export-svg" type="button">↓ Export SVG</button>
             </div>
           </div>
-          <div class="sentence-output" id="sentence-output" aria-live="polite"></div>
+          <div class="sawt-reading-toolbar">
+            <div class="sawt-view-switch" role="group" aria-label="SAWT output layout">
+              <button type="button" class="view-choice active" id="reading-mode" aria-pressed="true">Reading view</button>
+              <button type="button" class="view-choice" id="inspect-mode" aria-pressed="false">Inspect words</button>
+            </div>
+            <span class="sawt-size-info">Fixed writing size · matches 19px source text</span>
+          </div>
+          <div class="sawt-original-row" id="reading-source-row">
+            <span class="sawt-reading-label">ORIGINAL ENGLISH · 19 PX</span>
+            <div class="sawt-original-line" id="reading-source-text"></div>
+          </div>
+          <div class="sawt-reading-label sawt-output-line-label" id="reading-output-label">SAWT SCRIPT · SAME 19 PX</div>
+          <div class="sentence-output" id="sentence-output" data-mode="reading" aria-live="polite" aria-label="SAWT converted writing"></div>
+          <div class="sawt-compression-strip" id="compression-strip">
+            <span class="compression-heading">SYMBOL COUNT COMPARISON</span>
+            <span>English letters <b id="source-symbols">0</b></span>
+            <span>SAWT glyphs + marks <b id="sawt-symbols">0</b></span>
+            <strong id="compression-summary">—</strong>
+            <small>Glyph count compares the written forms, not measured handwriting time.</small>
+          </div>
           <div class="teaching-row"><span>TEACHING NOTATION</span><code id="teaching-output"></code></div>
           <div class="output-legend">
             <span><b id="stat-total">0</b> words</span>
@@ -163,7 +182,7 @@
             <span class="legend-item custom"><i></i><b id="stat-custom">0</b> saved</span>
           </div>
         </div>
-        <p class="converter-note"><span aria-hidden="true">ⓘ</span> Click any word to inspect or correct it. Your corrections are saved only in this browser. <b>Estimated</b> means its pronunciation needs review—not that it is official SAWT.</p>
+        <p class="converter-note"><span aria-hidden="true">ⓘ</span> Reading view uses the same type size as the editor. Click any SAWT word to inspect or correct it; Inspect words shows the detailed cards. Your corrections are saved only in this browser. <b>Estimated</b> means its pronunciation needs review—not that it is official SAWT.</p>
       </div>
       <div class="feature-strip">
         <div><span class="feature-icon">◈</span><strong>One sound, one rule</strong><small>Atomic T', D' and B' glyphs</small></div>

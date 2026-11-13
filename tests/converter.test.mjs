@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { LETTERS, VOWELS, GLYPHS, NOTEBOOK, STORIES } from "../js/sawt-data.js";
-import { convertText, convertWord, qualityStats, teachingForm } from "../js/sawt-converter.js";
-import { TONE_PATH, wordSvg, exportSentenceSvg, sentenceHTML } from "../js/sawt-render.js";
+import { convertText, convertWord, qualityStats, compressionStats, teachingForm } from "../js/sawt-converter.js";
+import { TONE_PATH, wordSvg, compactWordSvg, readingSentenceHTML, exportSentenceSvg, exportReadingSvg, sentenceHTML } from "../js/sawt-render.js";
 
 test("original 13 vowel labels remain, with only approved AOI added",()=>{
   assert.deepEqual(VOWELS.filter(x=>x.id!=="AOI").map(x=>x.id),["AA","A","AE","E","I","EE","AI","AO","AU","OO","U","O","YU"]);
@@ -223,4 +223,75 @@ test("Studio's default input is the quick brown fox pangram",async()=>{
   const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
   assert.ok(html.includes("The quick brown fox jumps over the lazy dog."));
   assert.ok(html.includes("STUDIO / INPUT SYNTAX"));
+});
+
+test("Reading view draws one compact inline glyph per word without inspection labels",()=>{
+  const plans=convertText("VOICE and BHARAT. OAT!");
+  const html=readingSentenceHTML(plans,{leadingDot:false});
+  assert.match(html,/sawt-reading-word/);
+  assert.match(html,/sawt-compact-word-svg/);
+  assert.ok(!html.includes("word-chip-foot"));
+  assert.ok(!html.includes("word-quality"));
+  assert.match(html,/sawt-reading-punct/);
+  assert.equal((html.match(/<button /g)||[]).length,4);
+});
+test("Reading view preserves whitespace, protected text, and carrier bullets",()=>{
+  const tick=String.fromCharCode(96);
+  const plans=convertText('The  "Exact words"\n*'+tick+'Highlighted'+tick);
+  const html=readingSentenceHTML(plans,{leadingDot:false});
+  assert.match(html,/The/i);
+  assert.match(html,/sawt-passthrough-literal/);
+  assert.match(html,/sawt-passthrough-bold/);
+  assert.match(html,/sawt-carrier-svg/);
+  assert.ok(html.includes("\n"),"Reading view must retain explicit line breaks");
+});
+test("Compact glyphs discard wide inspect-card padding but preserve vowel anchors",()=>{
+  const plan=convertWord("voice");
+  const large=wordSvg(plan);
+  const small=compactWordSvg(plan);
+  const matchLarge=/viewBox="0 0 ([0-9]+) 150"/.exec(large);
+  const matchSmall=/viewBox="[0-9]+ 0 ([0-9]+) 150"/.exec(small);
+  assert.ok(matchLarge&&matchSmall);
+  assert.ok(+matchSmall[1]<+matchLarge[1], "Compact viewBox must be narrower");
+  assert.match(small,/sawt-tone-aoi/);
+  assert.match(small,/M-20 35L-8 13L4 35L16 13/);
+});
+test("Written-symbol comparison counts atomic consonants and vowel marks fairly",()=>{
+  assert.deepEqual(compressionStats(convertText("VOICE")), {
+    english:5,sawt:3,difference:2,percent:40
+  });
+  assert.deepEqual(compressionStats(convertText("BHARAT")), {
+    english:6,sawt:4,difference:2,percent:33
+  });
+  const quoted=compressionStats(convertText('"Keep this unchanged"'));
+  assert.equal(quoted.english,quoted.sawt);
+  assert.deepEqual(compressionStats(convertText("")), {
+    english:0,sawt:0,difference:0,percent:0
+  });
+});
+test("Site opens in Reading view with Inspect available and editor-matched font size",async()=>{
+  const {readFileSync}=await import("node:fs");
+  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+  const css=readFileSync(new URL("../styles-studio.css",import.meta.url),"utf8");
+  assert.match(html,/id="reading-mode"/);
+  assert.match(html,/id="inspect-mode"/);
+  assert.match(html,/data-mode="reading"/);
+  assert.match(html,/id="reading-source-text"/);
+  assert.match(html,/id="compression-summary"/);
+  assert.match(css,/--sawt-editor-font-size:19px/);
+  assert.match(css,/--sawt-inline-glyph-height:50px/);
+  assert.match(css,/sawt-compact-word-svg/);
+});
+
+test("Reading SVG export is a compact continuous paragraph rather than inspection cards",()=>{
+  const tick=String.fromCharCode(96);
+  const plans=convertText('VOICE and "Keep this" '+tick+'bold'+tick+' *[AOI] BHARAT.');
+  const svg=exportReadingSvg(plans);
+  assert.match(svg,/^<\?xml/);
+  assert.match(svg,/M-20 35L-8 13L4 35L16 13/);
+  assert.match(svg,/Keep this/);
+  assert.match(svg,/font-weight="800"/);
+  assert.match(svg,/sawt-leading-dot/);
+  assert.ok(!svg.includes('font-size="14"'),"Reading export should not include inspector labels");
+  assert.match(svg,/scale\(0\.3333333333333333\)/);
 });

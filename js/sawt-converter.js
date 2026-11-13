@@ -243,3 +243,28 @@ export function qualityStats(plans) {
     custom:words.filter(x=>x.status==="custom").length
   };
 }
+
+
+// Compare visible SAWT glyphs with English letters at identical display size.
+// Each atomic consonant (including B', D', T', SH, CH), vowel mark,
+// modifier, and explicit carrier counts as one written symbol. This is NOT
+// a measure of pen strokes or actual handwriting time.
+export function compressionStats(plans) {
+  let english=0,sawt=0;
+  const countLetters = text=>(String(text).match(/\p{L}/gu)||[]).length;
+  for (const part of plans){
+    if(part.kind==="word"){
+      english+=countLetters(part.original);
+      sawt+=(part.units||[]).length+(part.marks||[]).length+(part.suffix?1:0);
+    }else if(part.kind==="literal"||part.kind==="bold"){
+      // Protected phrases are not compressed; their delimiters disappear.
+      english+=countLetters(part.text);
+      sawt+=countLetters(part.text);
+    }else if(part.kind==="carrier"){
+      english+=1;
+      sawt+=1+(part.tones||[]).length;
+    }
+  }
+  const difference=english-sawt;
+  return {english,sawt,difference,percent:english?Math.round(100*difference/english):0};
+}

@@ -70,6 +70,49 @@ export function wordSvg(plan,{leadingDot=false}={}){
   return '<svg class="sawt-word-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' 150" width="'+width+'" height="150" role="img" aria-label="'+escapeHTML(plan.original+" becomes "+teachingForm(plan))+'">'+base+dot+marks+suffix+'</svg>';
 }
 
+// Reading mode is actual continuous script at editor-scale typography.
+// Tight viewBoxes eliminate the whitespace from inspect cards. Consonant
+// positions remain anchored to their own marks, including true initial vowels.
+export function compactWordSvg(plan,{leadingDot=false}={}){
+  if(plan.kind!=="word")return "";
+  const units=plan.units||[];
+  const hasInitial=(plan.marks||[]).some(m=>m.anchor===-1);
+  let cursor=hasInitial?97:45;
+  const positions=units.map(unit=>{
+    const current=cursor;
+    // Atomic apostrophe consonants need a little more horizontal room.
+    cursor+=["B'","D'","T'"].includes(unit)?55:
+      ["SH","CH"].includes(unit)?46:42;
+    return current;
+  });
+  const leadX=hasInitial?(positions[0]??97)-51:null;
+  const firstX=positions[0]??(leadX??45);
+  const lastX=positions.at(-1)??firstX;
+  const suffixX=plan.suffix?lastX+39:null;
+  const left=Math.max(0,Math.floor((hasInitial?leadX:firstX)-26));
+  const right=Math.max(
+    lastX+(["B'","D'","T'"].includes(units.at(-1))?37:28),
+    hasInitial?leadX+26:0,
+    suffixX===null?0:suffixX+25
+  );
+  const width=Math.max(43,Math.ceil(right-left));
+  const letters=units.map((unit,i)=>baseUnitMarkup(unit,positions[i])).join("");
+  const groups={};
+  const marks=(plan.marks||[]).map(mark=>{
+    const idx=mark.anchor;
+    const x=idx===-1?leadX:(positions[idx]??firstX);
+    const key=String(idx);
+    const level=groups[key]||0;
+    groups[key]=level+1;
+    return drawTone(mark,x,level);
+  }).join("");
+  const dot=leadingDot&&hasInitial?'<circle class="sawt-leading-dot" cx="'+leadX+'" cy="81" r="5.8"/>':'';
+  const suffix=suffixX===null?"":'<text class="sawt-suffix" x="'+suffixX+'" y="99" text-anchor="middle">'+escapeHTML(plan.suffix)+'</text>';
+  return '<svg class="sawt-word-svg sawt-compact-word-svg" xmlns="http://www.w3.org/2000/svg" '+
+    'viewBox="'+left+' 0 '+width+' 150" width="'+width+'" height="150" role="img" aria-label="'+
+    escapeHTML(plan.original+" becomes "+teachingForm(plan))+'">'+letters+dot+marks+suffix+'</svg>';
+}
+
 // An explicit * is always a visible, centered bullet, even when the
 // optional automatic initial-dot display is disabled.
 export function carrierSvg(plan){
@@ -107,6 +150,21 @@ export function sentenceHTML(plans,options){
     return wordCard(plan,options);
   }).join("");
 }
+// Inline, naturally wrapping text with a fixed font size matching the source
+// editor. No chips, footnotes or per-word boxes interrupt the sentence.
+export function readingSentenceHTML(plans,options={}){
+  return plans.map(plan=>{
+    if(plan.kind==="space")return escapeHTML(plan.original);
+    if(plan.kind==="punct")return '<span class="sawt-reading-punct">'+escapeHTML(plan.original)+'</span>';
+    if(plan.kind==="literal"||plan.kind==="bold")return passthroughHTML(plan);
+    if(plan.kind==="carrier")return '<span class="sawt-reading-carrier">'+carrierSvg(plan)+'</span>';
+    const quality=plan.status||"estimated";
+    return '<button type="button" class="word-chip sawt-reading-word" data-quality="'+
+      escapeHTML(quality)+'" title="'+escapeHTML(plan.original+": "+(plan.note||""))+'">'+
+      compactWordSvg(plan,options)+'</button>';
+  }).join("");
+}
+
 export function inventoryGlyph(unit){
   const p={kind:"word",original:unit,units:[unit],marks:[],suffix:""};
   if(unit==="!")p.units=["!"];
@@ -187,4 +245,65 @@ export function exportSentenceSvg(plans,opts={}){
   return '<?xml version="1.0" encoding="UTF-8"?>'+
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+maxWidth+' '+height+'">'+
     '<rect width="100%" height="100%" fill="#0b0a16"/>'+SVG_STYLE+group+'</svg>';
+}
+
+
+// Export Reading view as an actual continuous paragraph (not the teaching
+// cards). Words are drawn with compact consonant spacing at a shared 19px
+// visual scale; line breaks and verbatim/marked text are retained.
+export function exportReadingSvg(plans,opts={}){
+  const pageWidth=1100,margin=30,lineHeight=65,scale=50/150;
+  let x=margin,y=23;
+  let shapes="";
+  function nextLine(){x=margin;y+=lineHeight;}
+  function ensureRoom(w){
+    if(x+w>pageWidth-margin && x>margin)nextLine();
+  }
+  function writeText(value,bold=false){
+    // Split only for visual wrapping, not for conversion or spelling changes.
+    const pieces=String(value).split(/(\r\n|\r|\n|[ \t]+)/);
+    for(const piece of pieces){
+      if(!piece)continue;
+      if(/[\r\n]/.test(piece)){nextLine();continue;}
+      if(/^[ \t]+$/.test(piece)){x+=piece.length*6.5;continue;}
+      const chars=Array.from(piece);
+      for(let start=0;start<chars.length;){
+        const room=Math.max(1,Math.floor((pageWidth-margin-x)/10.3));
+        const chunk=chars.slice(start,start+room).join("");
+        const w=chunk.length*10.3;
+        if(x+w>pageWidth-margin && x>margin){nextLine();continue;}
+        if(bold)shapes+='<rect x="'+(x-3)+'" y="'+(y+12)+'" width="'+(w+6)+
+          '" height="35" rx="5" fill="#28485a"/>';
+        shapes+='<text x="'+x+'" y="'+(y+36)+'" font-family="Inter,Arial,sans-serif" '+
+          'font-size="19" font-weight="'+(bold?"800":"400")+'" xml:space="preserve" '+
+          'fill="'+(bold?"#fff2c0":"#f8f5ff")+'">'+escapeHTML(chunk)+'</text>';
+        x+=w;start+=chunk.length;
+        if(start<chars.length)nextLine();
+      }
+    }
+  }
+  for(const part of plans){
+    if(part.kind==="space"){writeText(part.original);continue;}
+    if(part.kind==="punct"){writeText(part.original);continue;}
+    if(part.kind==="literal"||part.kind==="bold"){writeText(part.text,part.kind==="bold");continue;}
+    if(part.kind==="carrier"){
+      const inner=carrierSvg(part).replace(/^.*?<svg[^>]*>/,"").replace(/<\/svg>$/,"");
+      ensureRoom(96*scale);
+      shapes+='<g transform="translate('+x+' '+y+') scale('+scale+')">'+inner+'</g>';
+      x+=96*scale;continue;
+    }
+    const svg=compactWordSvg(part,opts);
+    const match=/viewBox="([0-9]+) 0 ([0-9]+) 150"/.exec(svg);
+    if(!match)continue;
+    const left=Number(match[1]),width=Number(match[2]);
+    const drawWidth=width*scale;
+    ensureRoom(drawWidth);
+    const inner=svg.replace(/^.*?<svg[^>]*>/,"").replace(/<\/svg>$/,"");
+    shapes+='<g transform="translate('+(x-left*scale)+' '+y+') scale('+scale+')">'+inner+'</g>';
+    x+=drawWidth;
+  }
+  const height=y+85;
+  return '<?xml version="1.0" encoding="UTF-8"?>'+
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+pageWidth+' '+height+'">'+
+    '<rect width="100%" height="100%" fill="#0b1015"/>'+SVG_STYLE+shapes+'</svg>';
 }

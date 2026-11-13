@@ -1,8 +1,8 @@
 import { LETTERS, GLYPHS, VOWELS, VOWEL_BY_ID, STORIES, NOTEBOOK } from "./sawt-data.js";
 import { enableExtendedPronunciations } from "./sawt-pronunciation.js";
 import { initVowelWaves } from "./sawt-waves.js";
-import { convertText, convertWord, teachingForm, qualityStats, DEFAULT_OPTIONS } from "./sawt-converter.js";
-import { escapeHTML, sentenceHTML, inventoryGlyph, toneSample, exportSentenceSvg } from "./sawt-render.js";
+import { convertText, convertWord, teachingForm, qualityStats, compressionStats, DEFAULT_OPTIONS } from "./sawt-converter.js";
+import { escapeHTML, sentenceHTML, readingSentenceHTML, inventoryGlyph, toneSample, exportSentenceSvg, exportReadingSvg } from "./sawt-render.js";
 
 const $=selector=>document.querySelector(selector);
 const $$=selector=>[...document.querySelectorAll(selector)];
@@ -12,6 +12,7 @@ let currentPlans=[];
 let activeWord="";
 let custom={};
 let options={...DEFAULT_OPTIONS};
+let displayMode="reading";
 let toastTimeout;
 
 function notice(message) {
@@ -31,10 +32,11 @@ function restore(){
       };
     }
     if(state.custom && typeof state.custom==="object" && !Array.isArray(state.custom))custom=state.custom;
+    displayMode=state.displayMode==="inspect"?"inspect":"reading";
   }catch{}
 }
 function persist(){
-  try{localStorage.setItem(KEY,JSON.stringify({version:1,options,custom}));}
+  try{localStorage.setItem(KEY,JSON.stringify({version:2,options,custom,displayMode}));}
   catch{notice("Browser storage is unavailable; corrections will last only this session.");}
 }
 function safeInput(){
@@ -47,7 +49,21 @@ function updateConverter(){
   updateCount();
   currentPlans=convertText(safeInput(),options,custom);
   const output=$("#sentence-output");
-  output.innerHTML=sentenceHTML(currentPlans,options);
+  const reading=displayMode==="reading";
+  output.dataset.mode=displayMode;
+  output.innerHTML=reading?readingSentenceHTML(currentPlans,options):sentenceHTML(currentPlans,options);
+  $("#reading-source-row").hidden=!reading;
+  $("#reading-output-label").hidden=!reading;
+  $("#reading-source-text").textContent=safeInput();
+  $("#reading-mode").classList.toggle("active",reading);
+  $("#inspect-mode").classList.toggle("active",!reading);
+  $("#reading-mode").setAttribute("aria-pressed",String(reading));
+  $("#inspect-mode").setAttribute("aria-pressed",String(!reading));
+  const symbolStats=compressionStats(currentPlans);
+  $("#source-symbols").textContent=symbolStats.english;
+  $("#sawt-symbols").textContent=symbolStats.sawt;
+  $("#compression-summary").textContent=symbolStats.english===0?"—":symbolStats.difference>=0?
+    symbolStats.percent+"% fewer written symbols":Math.abs(symbolStats.percent)+"% more written symbols";
   const wordItems=currentPlans.filter(x=>x.kind==="word");
   $$(".word-chip",output).forEach((chip,i)=>{
     chip.setAttribute("role","button");
@@ -154,6 +170,8 @@ function setupConverter(){
   });
   $("#convert-button").addEventListener("click",()=>{updateConverter();notice("Sentence converted.");});
   $("#clear-button").addEventListener("click",()=>{input.value="";updateConverter();input.focus();});
+  $("#reading-mode").addEventListener("click",()=>{displayMode="reading";persist();updateConverter();});
+  $("#inspect-mode").addEventListener("click",()=>{displayMode="inspect";persist();updateConverter();});
   $("#show-dot").addEventListener("change",event=>{
     options.leadingDot=event.target.checked;persist();updateConverter();
   });
@@ -168,7 +186,9 @@ function setupConverter(){
   });
   $("#export-svg").addEventListener("click",()=>{
     if(!currentPlans.some(x=>["word","literal","bold","carrier"].includes(x.kind))){notice("Type something to export first.");return;}
-    download("sawt-sentence.svg",exportSentenceSvg(currentPlans,options),"image/svg+xml");
+    download(displayMode==="reading"?"sawt-reading.svg":"sawt-sentence.svg",
+      displayMode==="reading"?exportReadingSvg(currentPlans,options):exportSentenceSvg(currentPlans,options),
+      "image/svg+xml");
     notice("SAWT sentence SVG exported.");
   });
   $("#sentence-output").addEventListener("click",event=>{
@@ -182,6 +202,7 @@ function setupConverter(){
     if(event.key!=="Enter" && event.key!==" ")return;
     const chip=event.target.closest(".word-chip");
     if(!chip)return;
+    if(chip.tagName==="BUTTON")return; // native button already handles Enter/Space
     event.preventDefault();chip.click();
   });
   updateConverter();

@@ -6,6 +6,12 @@ Live site: https://rayeen13.github.io/SAWT-Shorthand/
 
 ## The current website
 
+- **Reading view (default)** displays SAWT as one naturally wrapping written paragraph with a fixed 19px editor-matched script size (16px on mobile), without a separate label under every word. Click a glyph to edit its word.
+- **Inspect words** restores the previous teaching cards for individual words and their confidence labels.
+- Live comparison counts **English letters** versus **SAWT written symbols** (atomic consonants, vowel marks, optional modifiers), without claiming that the glyph count measures handwriting time.
+- SVG export respects the selected view: compact paragraph for Reading or teaching cards for Inspect.
+
+
 - Responsive **English → SAWT sentence converter**, not a manual word assembly demo.
 - Confirmed source words take priority over pronunciation guesses.
 - Online English dictionary expansion using the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) (optional; site works without it).
