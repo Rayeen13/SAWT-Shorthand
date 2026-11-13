@@ -128,3 +128,99 @@ test("standalone A is shown, but automatically inferred short A is implicit",()=
   const source=convertWord("azan");
   assert.ok(source.marks.some(mark=>mark.tone==="A"&&mark.anchor===-1),"original AZAN must remain unchanged");
 });
+
+test("double-quoted content is preserved without SAWT phonetic conversion",()=>{
+  const text='Before "Keep me as it is" after.';
+  const plans=convertText(text);
+  const protectedSpan=plans.find(x=>x.kind==="literal");
+  assert.ok(protectedSpan);
+  assert.equal(protectedSpan.text,"Keep me as it is");
+  assert.equal(teachingForm(protectedSpan),protectedSpan.text);
+  const html=sentenceHTML(plans);
+  assert.match(html,/sawt-passthrough-literal/);
+  assert.match(html,/Keep me as it is/);
+  assert.equal(protectedSpan.original,'"Keep me as it is"');
+  const output=exportSentenceSvg(plans);
+  assert.match(output,/Keep me as it is/);
+  assert.match(output,/xml:space="preserve"/);
+});
+test("backtick-wrapped content is preserved and visibly bold/highlighted",()=>{
+  const backtick=String.fromCharCode(96);
+  const phrase="I am also kept as it is";
+  const plans=convertText(backtick+phrase+backtick);
+  assert.equal(plans.length,1);
+  assert.equal(plans[0].kind,"bold");
+  assert.equal(plans[0].text,phrase);
+  assert.match(sentenceHTML(plans),/<strong class="sawt-passthrough sawt-passthrough-bold"/);
+  const svg=exportSentenceSvg(plans);
+  assert.match(svg,/font-weight="800"/);
+  assert.match(svg,/fill="#fff2c0"/);
+});
+test("asterisk is an explicit vowel-carrier bullet, independent of automatic dots",()=>{
+  const plans=convertText("*");
+  assert.equal(plans[0].kind,"carrier");
+  assert.equal(plans[0].original,"*");
+  assert.deepEqual(plans[0].tones,[]);
+  assert.match(sentenceHTML(plans,{leadingDot:false}),/sawt-carrier-svg/);
+  assert.match(sentenceHTML(plans,{leadingDot:false}),/sawt-leading-dot/);
+  assert.match(exportSentenceSvg(plans,{leadingDot:false}),/sawt-leading-dot/);
+});
+test("asterisk can anchor an explicit approved vowel mark",()=>{
+  const plans=convertText("*[AOI] *[I] *[EE]");
+  const carriers=plans.filter(x=>x.kind==="carrier");
+  assert.deepEqual(carriers.map(x=>x.tones),[["AOI"],["I"],["EE"]]);
+  assert.equal(teachingForm(carriers[0]),"*[AOI]");
+  assert.match(sentenceHTML(plans),/M-20 35L-8 13L4 35L16 13/);
+  assert.match(exportSentenceSvg(plans),/M-5 122L5 115/);
+});
+test("carrier before OAT moves its initial O tone onto the bullet",()=>{
+  const plans=convertText("*oat");
+  assert.equal(plans[0].kind,"carrier");
+  assert.deepEqual(plans[0].tones,["O"]);
+  assert.equal(plans[1].kind,"word");
+  assert.deepEqual(plans[1].marks,[]);
+  assert.equal(plans.map(teachingForm).join(""),"*[O]T");
+  assert.match(sentenceHTML(plans),/sawt-carrier-svg/);
+});
+test("an explicit carrier does not steal a following word's initial vowel",()=>{
+  const plans=convertText("*[AO]oat");
+  assert.equal(plans[0].kind,"carrier");
+  assert.deepEqual(plans[0].tones,["AO"]);
+  assert.deepEqual(plans[1].marks,[{tone:"O",anchor:-1}]);
+});
+test("protected text and carrier syntax are safe against HTML injection",()=>{
+  const text='"Hello <script>alert(1)</script>"';
+  const html=sentenceHTML(convertText(text));
+  assert.ok(!html.includes("<script>"));
+  assert.match(html,/&lt;script&gt;/);
+  const svg=exportSentenceSvg(convertText(text));
+  assert.match(svg,/&lt;script&gt;/);
+});
+test("unmatched quotation marks remain ordinary punctuation",()=>{
+  const plans=convertText('"unfinished writing');
+  assert.equal(plans[0].kind,"punct");
+  assert.equal(plans[0].original,'"');
+});
+
+test("custom SAWT words can place a tone directly on a literal * carrier",()=>{
+  const plan={
+    kind:"word",original:"custom",units:["K","*","T"],
+    marks:[{tone:"AO",anchor:1}],suffix:"",status:"custom"
+  };
+  assert.equal(teachingForm(plan),"K*[AO]T");
+  const svg=wordSvg(plan);
+  assert.match(svg,/sawt-leading-dot/);
+  assert.match(svg,/cx="98" cy="81" r="6.2"/);
+  assert.match(svg,/sawt-tone-ao/);
+});
+test("SAWT source inventory includes explicit vowel carrier",()=>{
+  const carrier=GLYPHS.find(g=>g.id==="CARRIER");
+  assert.ok(carrier);
+  assert.equal(carrier.written,"*");
+});
+test("Studio's default input is the quick brown fox pangram",async()=>{
+  const {readFileSync}=await import("node:fs");
+  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+  assert.ok(html.includes("The quick brown fox jumps over the lazy dog."));
+  assert.ok(html.includes("STUDIO / INPUT SYNTAX"));
+});

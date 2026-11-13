@@ -204,3 +204,59 @@ body{
   .wave-main{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
   .marquee-track{animation:none}
 }
+
+
+/* Studio source-preservation and explicit vowel-carrier syntax */
+.studio-syntax-help{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;
+  padding:12px 5px 6px;color:#aebccc;font-size:11px;
+}
+.studio-syntax-help>span{display:inline-flex;gap:7px;align-items:center;flex-wrap:wrap}
+.studio-syntax-help code,.syntax-tutorial code{
+  color:#a9e8f9;font-family:ui-monospace,Menlo,Consolas,monospace;
+  border:1px solid #70dbee4b;border-radius:7px;
+  background:#75e6ff12;padding:3px 7px;
+}
+.studio-syntax-help strong{color:#dceff6;font-size:14px}
+.sawt-passthrough{
+  display:inline-block;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;
+  padding:10px 12px;margin:5px 7px;
+  border-radius:9px;line-height:1.6;
+  font-size:18px;align-self:center;
+}
+.sawt-passthrough-literal{
+  color:#f0f4f9;background:transparent;
+  border:1px dashed #d9e4f65a;
+}
+.sawt-passthrough-bold{
+  background:linear-gradient(105deg,#1d414e,#29364f);
+  border:1px solid #83dcf7;
+  color:#fff2c0;
+  box-shadow:0 0 22px #75e6ff12;
+  font-weight:850;
+}
+.sawt-carrier-chip{display:inline-flex;align-items:center;justify-content:center;min-width:56px}
+.sawt-carrier-chip .sawt-carrier-svg{height:93px;max-width:76px}
+.syntax-tutorial{
+  background:linear-gradient(145deg,#101a23,#11131d);
+  border:1px solid #6dcce839;border-radius:18px;padding:24px;
+  margin:20px 0;
+}
+.syntax-tutorial-head h3{margin:8px 0 16px;font-size:20px;line-height:1.3}
+.syntax-tutorial-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.syntax-tutorial-grid>div{
+  background:#ffffff05;border:1px solid #ffffff16;
+  border-radius:13px;padding:15px;
+}
+.syntax-tutorial-grid code{display:inline-block;font-size:12px;max-width:100%;overflow-wrap:anywhere}
+.syntax-tutorial-grid p{color:#aeb9c7;font-size:12px;line-height:1.7;margin:10px 0 0}
+.syntax-tutorial-caption{
+  color:#8f9eaf;font-size:11px;line-height:1.65;margin:15px 0 0;
+}
+@media(max-width:650px){
+  .studio-syntax-help{font-size:10px;gap:8px;padding:13px 4px}
+  .studio-syntax-help>span{width:100%}
+  .syntax-tutorial{padding:15px}
+  .syntax-tutorial-grid{grid-template-columns:1fr;gap:9px}
+  .sawt-passthrough{font-size:15px;padding:9px 10px;margin:4px}
+}

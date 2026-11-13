@@ -156,17 +156,73 @@ export function convertWord(word,options=DEFAULT_OPTIONS,custom={}) {
   return parseFallback(word,options);
 }
 
+// Special Studio input forms:
+//   "Keep this unchanged"     => verbatim / unconverted
+//   \`Keep this unchanged\`     => verbatim + bold/highlighted
+//   *[AO]                     => explicit vowel carrier with AO on its dot
+//   *oat                      => move OAT's initial O to an explicit dot
+//   *                          => bullet (bare vowel carrier)
+// Quotes/backticks are control delimiters and disappear in rendered output.
 export function tokenize(text) {
-  return String(text).match(/[A-Za-zÀ-ž]+(?:['’][A-Za-zÀ-ž]+)*|\d+(?:[.,]\d+)?|\s+|[^\s]/gu) || [];
+  const input=String(text);
+  const parts=[];
+  const word=/^[A-Za-zÀ-ž]+(?:['’][A-Za-zÀ-ž]+)*/u;
+  const number=/^\d+(?:[.,]\d+)?/;
+  const white=/^\s+/;
+  for(let i=0;i<input.length;){
+    const ch=input[i];
+    const close=ch==="“"?"”":ch==="\""?"\"":ch==="\`"?"\`":null;
+    if(close){
+      // Do not treat escaped delimiters as closing marks.
+      let j=i+1;
+      for(;j<input.length;j++){
+        if(input[j]==="\\" && j+1<input.length){j++;continue;}
+        if(input[j]===close)break;
+      }
+      if(j<input.length){
+        parts.push({kind:ch==="\`"?"bold":"literal",original:input.slice(i,j+1),text:input.slice(i+1,j).replace(/\\(["\`\\])/g,"$1")});
+        i=j+1;continue;
+      }
+    }
+    if(ch==="*"){
+      const matched=/^\*\[([A-Za-z]{1,3})\]/.exec(input.slice(i));
+      if(matched && VOWEL_BY_ID[matched[1].toUpperCase()]){
+        parts.push({kind:"carrier",original:matched[0],tones:[matched[1].toUpperCase()],explicit:true});
+        i+=matched[0].length;continue;
+      }
+      parts.push({kind:"carrier",original:"*",tones:[],explicit:false});
+      i++;continue;
+    }
+    const rest=input.slice(i);
+    const a=word.exec(rest)||number.exec(rest)||white.exec(rest);
+    if(a){
+      parts.push({kind:/^\s/.test(a[0])?"space":/^\d/.test(a[0])?"punct":"word",original:a[0]});
+      i+=a[0].length;continue;
+    }
+    parts.push({kind:"punct",original:ch});
+    i++;
+  }
+  return parts;
 }
+
 export function convertText(text,options=DEFAULT_OPTIONS,custom={}) {
-  return tokenize(text).map(part=>{
-    if (/^[A-Za-zÀ-ž]/u.test(part)) return convertWord(part,options,custom);
-    if (/^\s+$/.test(part)) return {kind:"space",original:part};
-    return {kind:"punct",original:part};
-  });
+  const result=tokenize(text).map(part=>part.kind==="word"?convertWord(part.original,options,custom):part);
+  // A carrier immediately before a word takes ownership of its leading vowel
+  // mark(s), ensuring the dot is the *actual* tone anchor rather than a
+  // decorative extra bullet. Explicit *[AO] never steals marks.
+  for(let i=0;i<result.length-1;i++){
+    const carrier=result[i],word=result[i+1];
+    if(carrier.kind!=="carrier"||carrier.explicit||word.kind!=="word")continue;
+    const initial=word.marks.filter(mark=>mark.anchor===-1);
+    if(!initial.length)continue;
+    carrier.tones=initial.map(mark=>mark.tone);
+    word.marks=word.marks.filter(mark=>mark.anchor!==-1);
+  }
+  return result;
 }
 export function teachingForm(plan) {
+  if(plan.kind==="literal"||plan.kind==="bold") return plan.text;
+  if(plan.kind==="carrier") return "*"+(plan.tones||[]).map(t=>"["+t+"]").join("");
   if(plan.kind!=="word") return plan.original;
   const marks=plan.marks||[];
   let result="";

@@ -130,8 +130,13 @@
         </div>
         <div class="converter-input-area">
           <label class="sr-only" for="text-input">English or romanized input</label>
-          <textarea id="text-input" spellcheck="true" maxlength="3000" placeholder="Type an English sentence or a name such as Bharat…">Voice and Bharat. Azan was heard at dawn.</textarea>
+          <textarea id="text-input" spellcheck="true" maxlength="3000" placeholder="Type an English sentence or a name such as Bharat…">The quick brown fox jumps over the lazy dog.</textarea>
           <div class="input-counter"><span id="input-length">0</span> / 3000</div>
+        </div>
+        <div class="studio-syntax-help" aria-label="SAWT Studio text control syntax">
+          <span><code>&quot;Keep me as it is&quot;</code> Preserve original text</span>
+          <span><code>&#96;Bold and unchanged&#96;</code> Preserve and highlight</span>
+          <span><code>*[AO]</code> Draw a vowel on its own bullet <strong>•</strong></span>
         </div>
         <div class="converter-controls">
           <button class="button button-primary convert-button" id="convert-button" type="button">✦ Convert to SAWT</button>
@@ -208,6 +213,16 @@
         <article class="step-card"><span class="step-number">03</span><h3>Initial sounds can float</h3><p>When a word starts with a vowel, its mark can be written in the space before the first consonant. A centered bullet is optional, not required. Short A is otherwise implicit in generated words; standalone A remains visible.</p><strong class="step-inline">AZAN → [A]Z[AA]N</strong></article>
         <article class="step-card"><span class="step-number">04</span><h3>Keep sounds joined</h3><p>BH uses B', unvoiced TH uses T', and voiced TH uses D'—each as a single letter form. SH and CH use the handwritten drooping-c stroke.</p><strong class="step-inline">BHARAT → B'[AA]RT</strong></article>
       </div>
+      <article class="syntax-tutorial" aria-labelledby="syntax-tutorial-title">
+        <div class="syntax-tutorial-head"><span class="section-index">STUDIO / INPUT SYNTAX</span><h3 id="syntax-tutorial-title">Keep words exactly as written. Or put a vowel on its own.</h3></div>
+        <div class="syntax-tutorial-grid">
+          <div><code>&quot;Keep me as it is&quot;</code><p>Quotation marks protect an entire phrase from SAWT conversion. The letters, spaces and punctuation are preserved, and the control quotes disappear from the final output.</p></div>
+          <div><code>&#96;I stay highlighted&#96;</code><p>Backticks protect the exact phrase as well, with a bold highlighted treatment in Studio and SVG exports.</p></div>
+          <div><code>*[AO]</code><p>An explicit <strong>*</strong> represents the centered SAWT vowel-carrier bullet <strong>•</strong>, carrying the chosen AO sound mark. Use any approved vowel ID, including AOI.</p></div>
+          <div><code>*oat</code><p>Place * immediately before an initial-vowel word to move its leading vowel mark onto the bullet. Your original standalone-vowel examples remain unchanged without *.</p></div>
+        </div>
+        <p class="syntax-tutorial-caption">An explicit * always draws a bullet even when “Show optional starting dot” is turned off. Unmatched quotation marks or backticks are treated as ordinary punctuation.</p>
+      </article>
       <div class="rules-note"><span class="rules-note-icon">✳</span><div><strong>Official vs. estimated</strong><p>Notebook examples are preserved exactly. The remaining English words use a small built-in pronunciation list or a marked heuristic. The converter does not pretend a guessed word is a confirmed SAWT rule. <b>-MENT and -LY remain unapproved</b>, so no extra glyphs are invented for them.</p></div></div>
     </section>
 
@@ -245,7 +260,7 @@
       <label class="modal-field"><span>Letter / glyph units <small>(comma-separated)</small></span><input id="edit-units" spellcheck="false" placeholder="B',R,T" required></label>
       <label class="modal-field"><span>Vowel tones <small>(TONE@position, use @start for initial)</small></span><input id="edit-marks" spellcheck="false" placeholder="AA@1, A@start"></label>
       <label class="modal-field"><span>Confirmed modifier</span><select id="edit-suffix"><option value="">None</option><option value="+">+  (-ING)</option><option value="!">!  (-NG)</option><option value="#">#  (-TION)</option></select></label>
-      <p class="modal-hint">Use only known SAWT units and the 13 handwritten vowel IDs. Position 1 means the first consonant glyph; @start means a vowel before the word.</p>
+      <p class="modal-hint">Use approved SAWT glyphs and vowel marks. You can type * as a glyph unit to create a centered bullet inside a word and anchor a vowel to it (such as AO@2). Position 1 means the first glyph; @start means a vowel before the word.</p>
       <div class="modal-error" id="edit-error" role="alert" hidden></div>
       <div class="modal-actions"><button type="button" class="utility-button" id="reset-word">Reset word</button><button type="button" class="button button-primary" id="save-word">Save correction</button></div>
     </form>

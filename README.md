@@ -47,6 +47,20 @@ To run tests (Node 22 or newer recommended):
 npm test
 ```
 
+## Studio input syntax
+
+The Studio recognizes three explicit editing controls that are not ordinary English-to-SAWT spellings:
+
+- `"Keep me as it is"` — preserve the exact text inside the double quotation marks without converting it. The wrapping quotes are delimiters, not part of the rendered result.
+- `` `I am also kept as it is` `` — preserve the exact text and render it **bold/highlighted** in the Studio and exported SVG.
+- `*` — an explicit **vowel carrier**. It renders as a centered bullet `•` even when the optional automatic supporting-dot toggle is off. The manual word editor also accepts `*` as an atomic glyph unit, so a sound can be anchored to a separate dot inside a word.
+- `*[AO]`, `*[AOI]`, `*[I]` — place the specified approved vowel mark on the bullet. For `I` and `EE`, the mark remains below the carrier; all other source tones use their existing side.
+- `*oat` — take OAT's **initial** O tone and attach it to the explicit bullet before T. This is not the same as TOE.
+
+Quoted/backtick text preserves spelling, spaces and punctuation and bypasses both the English dictionary and fallback conversion. Unclosed quotes are ordinary punctuation. The teaching notation and SVG exports respect these modes. User text stays local.
+
+Default input example: **The quick brown fox jumps over the lazy dog.**
+
 ## Script rules
 
 The handwritten draft and confirmed corrections are authoritative. Extended online pronunciation matches are a helpful approximation, not definitive SAWT:

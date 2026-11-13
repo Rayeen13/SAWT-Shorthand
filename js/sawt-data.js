@@ -28,6 +28,7 @@ export const GLYPHS=[
   {id:"SH", written:"Sᶜ", title:"SH", example:"shock", type:"hooked"},
   {id:"CH", written:"Cᶜ", title:"CH", example:"chalk", type:"hooked"},
   {id:"ZH", written:"~", title:"ZH", example:"vision, measure", type:"special"},
+  {id:"CARRIER", written:"*", title:"Vowel carrier", example:"*[AO] → bullet + AO tone", type:"carrier"},
   {id:"NG", written:"!", title:"NG", example:"sing", type:"suffix"},
   {id:"ING", written:"+", title:"-ING", example:"trying", type:"suffix"},
   {id:"TION", written:"#", title:"-TION", example:"direction", type:"suffix"},

@@ -7,7 +7,7 @@ import { escapeHTML, sentenceHTML, inventoryGlyph, toneSample, exportSentenceSvg
 const $=selector=>document.querySelector(selector);
 const $$=selector=>[...document.querySelectorAll(selector)];
 const KEY="sawt-converter-v1";
-const VALID_UNITS=new Set([...LETTERS,"B'","D'","T'","SH","CH","~","!","∧","∨"]);
+const VALID_UNITS=new Set([...LETTERS,"B'","D'","T'","SH","CH","~","!","∧","∨","*"]);
 let currentPlans=[];
 let activeWord="";
 let custom={};
@@ -167,7 +167,7 @@ function setupConverter(){
     catch{notice("Clipboard not available in this browser.");}
   });
   $("#export-svg").addEventListener("click",()=>{
-    if(!currentPlans.some(x=>x.kind==="word")){notice("Type a sentence first.");return;}
+    if(!currentPlans.some(x=>["word","literal","bold","carrier"].includes(x.kind))){notice("Type something to export first.");return;}
     download("sawt-sentence.svg",exportSentenceSvg(currentPlans,options),"image/svg+xml");
     notice("SAWT sentence SVG exported.");
   });

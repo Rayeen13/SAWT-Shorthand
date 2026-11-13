@@ -28,6 +28,8 @@ const TONE_PATH={
 export { TONE_PATH };
 
 function baseUnitMarkup(unit,x){
+  // An asterisk is the author's vowel carrier glyph, not an inked star.
+  if(unit==="*")return '<circle class="sawt-leading-dot" cx="'+x+'" cy="81" r="6.2"/>';
   const safe=escapeHTML(unit);
   if(unit==="SH"||unit==="CH"){
     const letter=unit==="SH"?"S":"C";
@@ -68,6 +70,22 @@ export function wordSvg(plan,{leadingDot=false}={}){
   return '<svg class="sawt-word-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+width+' 150" width="'+width+'" height="150" role="img" aria-label="'+escapeHTML(plan.original+" becomes "+teachingForm(plan))+'">'+base+dot+marks+suffix+'</svg>';
 }
 
+// An explicit * is always a visible, centered bullet, even when the
+// optional automatic initial-dot display is disabled.
+export function carrierSvg(plan){
+  const tones=plan.tones||[];
+  const marks=tones.map((tone,index)=>drawTone({tone},48,index)).join("");
+  return '<svg class="sawt-word-svg sawt-carrier-svg" xmlns="http://www.w3.org/2000/svg" '+
+    'viewBox="0 0 96 150" width="96" height="150" role="img" aria-label="'+
+    escapeHTML("Vowel carrier dot"+(tones.length?" with "+tones.join(", ")+" tone":""))+'">'+
+    '<circle class="sawt-leading-dot" cx="48" cy="81" r="6.2"/>'+marks+'</svg>';
+}
+function passthroughHTML(plan){
+  const safe=escapeHTML(plan.text);
+  if(plan.kind==="bold")return '<strong class="sawt-passthrough sawt-passthrough-bold" title="Preserved, highlighted text">'+safe+'</strong>';
+  return '<span class="sawt-passthrough sawt-passthrough-literal" title="Preserved without conversion">'+safe+'</span>';
+}
+
 export function wordCard(plan,options){
   const status=plan.status||"estimated";
   const classes=status==="confirmed"?"confirmed":status==="dictionary"?"dictionary":status==="custom"?"custom":"estimated";
@@ -84,6 +102,8 @@ export function sentenceHTML(plans,options){
       return '<span class="sentence-gap" aria-hidden="true"></span>';
     }
     if(plan.kind==="punct")return '<span class="sentence-punct">'+escapeHTML(plan.original)+'</span>';
+    if(plan.kind==="literal"||plan.kind==="bold")return passthroughHTML(plan);
+    if(plan.kind==="carrier")return '<span class="sawt-carrier-chip">'+carrierSvg(plan)+'</span>';
     return wordCard(plan,options);
   }).join("");
 }
@@ -121,6 +141,39 @@ export function exportSentenceSvg(plans,opts={}){
       group+='<text x="'+x+'" y="'+(y+99)+'" font-family="Inter,Arial,sans-serif" font-size="55" fill="#f8f5ff">'+escapeHTML(plan.original)+'</text>';
       x+=30;
       continue;
+    }
+    if(plan.kind==="literal"||plan.kind==="bold"){
+      const text=plan.text;
+      const isBold=plan.kind==="bold";
+      // Keep spelling, case, punctuation and spacing intact in exported SVG.
+      // Long fragments wrap visually, but copy/teaching notation is unchanged.
+      const rows=text.split(/\r?\n/).flatMap(line=>{
+        const segments=[];
+        for(let i=0;i<line.length;i+=60)segments.push(line.slice(i,i+60));
+        return segments.length?segments:[""];
+      });
+      const lines=rows.length?rows:[""];
+      const blockWidth=Math.min(1100,Math.max(75,...lines.map(line=>line.length*17+26)));
+      if(x+blockWidth>maxWidth-25){x=35;y+=rowHeight;}
+      const h=lines.length*42+23;
+      if(isBold)group+='<rect x="'+x+'" y="'+(y+56)+'" width="'+blockWidth+
+        '" height="'+Math.max(55,h)+'" rx="12" fill="#273b48" stroke="#78dfe3" stroke-width="1.4"/>';
+      lines.forEach((line,index)=>{
+        group+='<text x="'+(x+12)+'" y="'+(y+97+index*41)+
+          '" font-family="Inter,Arial,sans-serif" font-size="29" xml:space="preserve" '+
+          'font-weight="'+(isBold?"800":"450")+'" fill="'+(isBold?"#fff2c0":"#f8f5ff")+'">'+
+          escapeHTML(line)+'</text>';
+      });
+      x+=blockWidth+9;
+      if(lines.length>2){y+=(lines.length-2)*42;}
+      continue;
+    }
+    if(plan.kind==="carrier"){
+      if(x+95>maxWidth-35){x=35;y+=rowHeight;}
+      const fragment=carrierSvg(plan);
+      const inner=fragment.replace(/^.*?<svg[^>]*>/,"").replace(/<\/svg>$/,"");
+      group+='<g transform="translate('+x+' '+y+')">'+inner+'</g>';
+      x+=96;continue;
     }
     const svg=wordSvg(plan,opts);
     const w=Number((svg.match(/viewBox="0 0 ([0-9]+) 150"/)||[])[1]||100);
