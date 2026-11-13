@@ -4,9 +4,9 @@ import { LETTERS, VOWELS, GLYPHS, NOTEBOOK, STORIES } from "../js/sawt-data.js";
 import { convertText, convertWord, qualityStats, teachingForm } from "../js/sawt-converter.js";
 import { TONE_PATH, wordSvg, exportSentenceSvg, sentenceHTML } from "../js/sawt-render.js";
 
-test("only the 13 confirmed source vowel labels appear",()=>{
-  assert.deepEqual(VOWELS.map(x=>x.id),["AA","A","AE","E","I","EE","AI","AO","AU","OO","U","O","YU"]);
-  assert.equal(VOWELS.length,13);
+test("original 13 vowel labels remain, with only approved AOI added",()=>{
+  assert.deepEqual(VOWELS.filter(x=>x.id!=="AOI").map(x=>x.id),["AA","A","AE","E","I","EE","AI","AO","AU","OO","U","O","YU"]);
+  assert.equal(VOWELS.length,14);
   for(const entry of VOWELS) assert.ok(TONE_PATH[entry.id]);
 });
 test("I is exactly half the length of EE slash",()=>{
@@ -98,4 +98,33 @@ test("HTML input is safely escaped in converter rendering",()=>{
   const html=sentenceHTML(plans);
   assert.ok(!html.includes("<script>"));
   assert.ok(html.includes("&lt;"));
+});
+
+test("AOI is a single connected /\\/ mark anchored to V in VOICE",()=>{
+  const plan=convertWord("voice");
+  assert.deepEqual(plan.units,["V","S"]);
+  assert.deepEqual(plan.marks,[{tone:"AOI",anchor:0}]);
+  assert.equal(plan.status,"confirmed");
+  assert.equal(teachingForm(plan),"V[AOI]S");
+  assert.match(TONE_PATH.AOI,/M-20 35L-8 13L4 35L16 13/);
+  const svg=wordSvg(plan);
+  assert.match(svg,/M-20 35L-8 13L4 35L16 13/);
+});
+test("OI/OY diphthongs from the pronunciation dictionary use one AOI mark",()=>{
+  const words=["boy","joy","coin","noise","choice"];
+  for(const word of words){
+    const plan=convertWord(word);
+    assert.equal(plan.marks.filter(x=>x.tone==="AOI").length,1,word);
+    assert.equal(plan.marks.filter(x=>["AO","I"].includes(x.tone)).length,0,word);
+  }
+});
+test("standalone A is shown, but automatically inferred short A is implicit",()=>{
+  const article=convertWord("a");
+  assert.deepEqual(article.marks,[{tone:"A",anchor:-1}]);
+  for(const word of ["the","sun","was","about","some","upon"]){
+    const plan=convertWord(word);
+    assert.ok(plan.marks.every(mark=>mark.tone!=="A"),word+" has an unwanted A mark");
+  }
+  const source=convertWord("azan");
+  assert.ok(source.marks.some(mark=>mark.tone==="A"&&mark.anchor===-1),"original AZAN must remain unchanged");
 });

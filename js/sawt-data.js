@@ -1,4 +1,4 @@
-// SAWT 1.0 — source-aligned definitions. Keep the inventory compact.
+// SAWT 1.1 — source-aligned definitions. Keep the inventory compact.
 // Marks are directly transcribed from the user's handwritten reference.
 // Apostrophes are part of consonant glyphs: B', D', T' (never standalone tokens).
 
@@ -16,6 +16,7 @@ export const VOWELS = [
   {id:"OO", name:"OO", cue:"food", shape:"macron", side:"above", sound:"uː"},
   {id:"U",  name:"U", cue:"foot, book", shape:"shortdash", side:"above", sound:"ʊ"},
   {id:"O",  name:"O", cue:"oat, boat", shape:"slashup", side:"above", sound:"oʊ"},
+  {id:"AOI", name:"AOI", cue:"voice, boy, choice", shape:"zigzag", side:"above", sound:"ɔɪ"},
   {id:"YU", name:"YU", cue:"new, huge", shape:"twodots", side:"above", sound:"juː"}
 ];
 export const VOWEL_BY_ID=Object.fromEntries(VOWELS.map(x=>[x.id,x]));
@@ -45,6 +46,7 @@ export const RULES={
 // Units are atomic glyphs; the tone anchor is a unit index, or -1 for a
 // word-initial vowel floating to the left of the first consonant.
 export const NOTEBOOK={
+  voice:{units:["V","S"],marks:[{tone:"AOI",anchor:0}],status:"confirmed"},
   azan:{units:["Z","N"],marks:[{tone:"A",anchor:-1},{tone:"AA",anchor:0}],status:"confirmed"},
   oat:{units:["T"],marks:[{tone:"O",anchor:-1}],status:"confirmed"},
   bharat:{units:["B'","R","T"],marks:[{tone:"AA",anchor:0}],status:"confirmed"},
@@ -79,6 +81,12 @@ export const STORIES=[
 // ARPABET stress digits from an English pronunciation lexicon, with
 // hand-confirmed SAWT spellings winning above any dictionary result.
 const WORDS=`
+voice|V OY1 S
+boy|B OY1
+joy|JH OY1
+coin|K OY1 N
+noise|N OY1 Z
+choice|CH OY1 S
 the|DH AH0
 cat|K AE1 T
 sat|S AE1 T
@@ -285,7 +293,7 @@ export const LEXICON=Object.fromEntries(WORDS.trim().split("\n").map(line=>{
 export const ARPA_TO_TONE={
   AA:"AA",AE:"AE",AH:"A",AO:"AO",AW:"AU",AY:"AI",
   EH:"E",ER:"A",EY:"E",IH:"I",IY:"EE",
-  OW:"O",OY:["AO","I"],UH:"U",UW:"OO"
+  OW:"O",OY:"AOI",UH:"U",UW:"OO"
 };
 export const CONSONANT_TO_UNIT={
   B:"B",CH:"CH",D:"D",DH:"D'",F:"F",G:"G",HH:"H",JH:"J",

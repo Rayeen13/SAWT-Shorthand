@@ -13,7 +13,8 @@ Live site: https://rayeen13.github.io/SAWT-Shorthand/
 - Local corrections: click a converted word and edit its confirmed glyph units and vowel placements.
 - Optional initial supporting dot `•` and optional W-for-V rendering.
 - Sentence SVG export, four beginner-friendly stories, and a compact reference page with only **13 source vowel labels**.
-- New original SAWT icon used as site branding and favicon.
+- Restored the original graph-window identity, with interactive, **illustrative sine-wave studies** for AA, EE, AO, AU and AOI.
+- A new Ṣād (ص)-inspired SVG mark serves as the site logo and favicon.
 
 ## Repo layout
 
@@ -23,7 +24,8 @@ styles.css                  shared responsive visual design
 assets/sawt-icon.svg        SVG branding and favicon
 js/sawt-data.js             canonical glyphs, 13 vowel marks, source examples
 js/sawt-converter.js        text tokenization and sound-to-SA WT conversion
-js/sawt-render.js           genuine SVG glyph rendering + SVG export
+js/sawt-render.js           SVG glyph rendering and SVG export
+js/sawt-waves.js            original-style interactive vowel wave graph
 js/sawt-pronunciation.js    optional CMUdict text parser
 js/app.js                   UI/event handling and local corrections
 tests/converter.test.mjs    Node.js tests
@@ -47,9 +49,11 @@ npm test
 
 ## Script rules
 
-The handwritten draft and confirmed corrections are authoritative:
+The handwritten draft and confirmed corrections are authoritative. Extended online pronunciation matches are a helpful approximation, not definitive SAWT:
 
-- Vowels: AA, A, AE, E, I, EE, AI, AO, AU, OO, U, O, YU. **I is a short rising slash; EE uses a double-length rising slash.**
+- Original handwritten vowel labels: AA, A, AE, E, I, EE, AI, AO, AU, OO, U, O, YU. **I is a short rising slash; EE uses a double-length rising slash.**
+- Confirmed addition: **AOI /ɔɪ/** for VOICE, BOY, CHOICE. One joined three-segment **/\\/** stroke anchored to the consonant. VOICE = **V[AOI]S**.
+- **Short A is implicit inside generated words.** Only standalone A is emitted automatically; authoritative handwritten examples such as AZAN retain their explicitly authored A mark.
 - Initial vowels may float in front of the word with **no dot**. A supporting centered bullet is optional.
 - T', D', B' are each indivisible glyph units, representing unvoiced TH, voiced TH, and BH.
 - SH and CH use a single c-like drooping handwritten lower stroke.

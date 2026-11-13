@@ -5,6 +5,6 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check js/sawt-data.js && node --check js/sawt-converter.js && node --check js/sawt-render.js && node --check js/sawt-pronunciation.js && node --check js/app.js"
+    "check": "node --check js/sawt-data.js && node --check js/sawt-converter.js && node --check js/sawt-render.js && node --check js/sawt-pronunciation.js && node --check js/sawt-waves.js && node --check js/app.js"
   }
 }

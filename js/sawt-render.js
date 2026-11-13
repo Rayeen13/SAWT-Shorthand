@@ -17,6 +17,8 @@ const TONE_PATH={
   EE:'<path d="M-10 128L10 114"/>',
   AI:'<path d="M-14 35Q0 5 14 35"/>',
   AO:'<path d="M-14 12L0 35L14 12"/>',
+  // AO + short I as ONE pen stroke: exact connected /\\/ zigzag.
+  AOI:'<path d="M-20 35L-8 13L4 35L16 13"/>',
   AU:'<path d="M-14 12Q0 40 14 12"/>',
   OO:'<path d="M-17 24H17"/>',
   U:'<path d="M-9 24H9"/>',

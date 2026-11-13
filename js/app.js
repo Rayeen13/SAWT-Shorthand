@@ -1,5 +1,6 @@
 import { LETTERS, GLYPHS, VOWELS, VOWEL_BY_ID, STORIES, NOTEBOOK } from "./sawt-data.js";
 import { enableExtendedPronunciations } from "./sawt-pronunciation.js";
+import { initVowelWaves } from "./sawt-waves.js";
 import { convertText, convertWord, teachingForm, qualityStats, DEFAULT_OPTIONS } from "./sawt-converter.js";
 import { escapeHTML, sentenceHTML, inventoryGlyph, toneSample, exportSentenceSvg } from "./sawt-render.js";
 
@@ -238,6 +239,7 @@ function init(){
   setupStories();
   setupMobileNav();
   setupGallery();
+  initVowelWaves();
   const status=$(".output-status");
   status.textContent="CORE READY";
   enableExtendedPronunciations().then(count=>{

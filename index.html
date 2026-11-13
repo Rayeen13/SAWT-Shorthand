@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0a16">
+  <meta name="theme-color" content="#090b0f">
   <meta name="description" content="SAWT — Sound-Aligned Writing Technique. Learn the original shorthand glyphs, convert English sentences to phonetic SAWT, and practice with short stories.">
   <title>SAWT — Sound-Aligned Writing Technique</title>
   <link rel="icon" type="image/svg+xml" href="assets/sawt-icon.svg">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-studio.css">
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
@@ -43,32 +44,74 @@
   <main>
     <section class="hero shell" id="home">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="eyebrow-dot"></span> THE SOUND-FIRST SHORTHAND</p>
-        <h1>Write the <em>sound.</em><br>Keep the <span class="outline-word">meaning.</span></h1>
-        <p class="hero-description"><b>SAWT</b> — <strong>Sound-Aligned Writing Technique</strong> — uses consonant sounds, compact vowel marks and a few confirmed modifiers to write with less ink. Built from real handwritten notes, not a replacement alphabet.</p>
+        <p class="eyebrow"><span class="eyebrow-dot"></span> ORIGINAL SHORTHAND SYSTEM <span class="edition-dot">·</span> DIGITAL EDITION 1.1</p>
+        <h1>Write what<br><em>the ear hears.</em></h1>
+        <p class="hero-description"><strong>SAWT — Sound-Aligned Writing Technique</strong> compresses spoken words into a consonant skeleton, a tiny anchored sound mark, and an optional modifier. A writing system guided by your ear—not the English alphabet.</p>
         <div class="hero-buttons">
-          <a class="button button-primary" href="#converter">Convert a sentence <span>↗</span></a>
-          <a class="button button-secondary" href="#method">Learn the method</a>
+          <a class="button button-primary" href="#converter">Open SAWT Studio <span aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="#script">Explore the sound map</a>
         </div>
         <div class="hero-facts">
-          <span><i></i> 13 source vowel marks</span>
-          <span><i></i> Speech-first conversion</span>
-          <span><i></i> Supports BH and TH</span>
+          <span><i></i> 13 handwritten vowel marks + AOI</span>
+          <span><i></i> Sound-first writing</span>
+          <span><i></i> Handwritten origin</span>
         </div>
       </div>
-      <div class="hero-art">
-        <div class="art-halo"></div>
-        <div class="hero-art-top"><span>SAWT / SCRIPT STUDIES</span><span class="art-signal"><i></i> SOUND ON</span></div>
-        <div class="art-glyph">
-          <span class="art-abstract" aria-hidden="true">S<span class="art-mark">⌢</span></span>
-          <div><span class="art-label">LESS INK</span><span class="art-line"></span><span class="art-label">MORE VOICE</span></div>
-        </div>
-        <div class="hero-art-bottom">
-          <span>PHONETIC NOTATION · v1.0</span>
-          <span>100% YOUR SCRIPT</span>
+
+      <div class="hero-visual">
+        <div class="visual-window" aria-label="Interactive, stylized sine wave studies of SAWT vowel sounds">
+          <div class="window-bar">
+            <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span>SAWT / VOWEL WAVE STUDIES</span>
+            <span class="window-status"><i></i> SOUND TO STROKE</span>
+          </div>
+          <div class="visual-stage">
+            <span class="axis-label axis-y">AMPLITUDE</span>
+            <span class="axis-label axis-x">TIME →</span>
+            <svg class="hero-wave-svg" viewBox="0 0 720 410" aria-hidden="true">
+              <defs>
+                <linearGradient id="vowelWaveGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#71e5ff"/>
+                  <stop offset=".54" stop-color="#a991ff"/>
+                  <stop offset="1" stop-color="#f4c86a"/>
+                </linearGradient>
+                <linearGradient id="vowelWaveFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#76e9f8" stop-opacity=".28"/>
+                  <stop offset="1" stop-color="#76e9f8" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g class="wave-grid">
+                <path d="M45 72H675 M45 139H675 M45 206H675 M45 273H675 M45 340H675"/>
+                <path d="M122 52V354 M202 52V354 M282 52V354 M362 52V354 M442 52V354 M522 52V354 M602 52V354"/>
+              </g>
+              <path class="wave-axis" d="M45 206H675"/>
+              <path id="wave-context-a" class="wave-context wave-context-a" d="M45 206H675"/>
+              <path id="wave-context-b" class="wave-context wave-context-b" d="M45 206H675"/>
+              <path id="wave-main" class="wave-main" d="M45 206H675"/>
+              <circle class="wave-node" cx="45" cy="206" r="4"/>
+              <circle class="wave-node" cx="675" cy="206" r="4"/>
+            </svg>
+            <div class="floating-token token-a"><small>VOWEL MARK</small><b id="wave-active-tone">AOI</b><span id="wave-active-word">VOICE</span></div>
+            <div class="floating-token token-b"><small>ONE STROKE</small><b class="wave-glyph-preview">/\/</b><span>AO + I → AOI</span></div>
+            <div class="wave-tabs" role="tablist" aria-label="Choose a vowel for its illustrative sine wave">
+              <button type="button" role="tab" data-vowel-wave="AA" aria-selected="false">AA</button>
+              <button type="button" role="tab" data-vowel-wave="EE" aria-selected="false">EE</button>
+              <button type="button" role="tab" data-vowel-wave="AO" aria-selected="false">AO</button>
+              <button type="button" role="tab" data-vowel-wave="AU" aria-selected="false">AU</button>
+              <button type="button" role="tab" data-vowel-wave="AOI" aria-selected="true" class="selected">AOI</button>
+            </div>
+          </div>
+          <div class="visual-footer">
+            <div><span>THE FORMULA</span><strong>Consonants + Anchored vowel + Modifier</strong></div>
+            <div class="visual-footer-right"><span>DISPLAY</span><strong>Illustrative vowel waves</strong></div>
+          </div>
         </div>
       </div>
     </section>
+    <div class="hero-marquee" aria-hidden="true"><div class="marquee-track">
+      <span>SOUND FIRST</span><i>•</i><span>LESS INK</span><i>•</i><span>ONE GESTURE AT A TIME</span><i>•</i><span>THE EAR LEADS</span><i>•</i>
+      <span>SOUND FIRST</span><i>•</i><span>LESS INK</span><i>•</i><span>ONE GESTURE AT A TIME</span><i>•</i><span>THE EAR LEADS</span><i>•</i>
+    </div></div>
 
     <section class="section shell converter-section" id="converter">
       <div class="section-title-row">
@@ -87,7 +130,7 @@
         </div>
         <div class="converter-input-area">
           <label class="sr-only" for="text-input">English or romanized input</label>
-          <textarea id="text-input" spellcheck="true" maxlength="3000" placeholder="Type an English sentence or a name such as Bharat…">Bharat has many voices. Azan was heard at dawn.</textarea>
+          <textarea id="text-input" spellcheck="true" maxlength="3000" placeholder="Type an English sentence or a name such as Bharat…">Voice and Bharat. Azan was heard at dawn.</textarea>
           <div class="input-counter"><span id="input-length">0</span> / 3000</div>
         </div>
         <div class="converter-controls">
@@ -149,7 +192,7 @@
         <div class="special-grid" id="special-grid"></div>
       </div>
       <div class="reference-card vowels-reference">
-        <div class="reference-header"><h3>Thirteen original vowel marks</h3><span>I is half the stroke length of EE</span></div>
+        <div class="reference-header"><h3>Thirteen handwritten vowel marks + AOI</h3><span>AOI uses one connected /\/ stroke; I is half of EE</span></div>
         <div class="vowel-grid" id="vowel-grid"></div>
       </div>
     </section>
@@ -161,8 +204,8 @@
       </div>
       <div class="steps-grid">
         <article class="step-card"><span class="step-number">01</span><h3>Hear the word</h3><p>Start from the pronounced sounds, not the English spelling. The word <b>CAT</b> can begin with a K sound even though it's spelled with C.</p><strong class="step-inline">CAT → K[AE]T</strong></article>
-        <article class="step-card"><span class="step-number">02</span><h3>Mark the vowel</h3><p>Use the actual vertical, caret, arch or slash shape. The tone goes above or below its consonant. A short I slash is half the length of EE.</p><strong class="step-inline">S[I]T ≠ S[EE]D</strong></article>
-        <article class="step-card"><span class="step-number">03</span><h3>Initial sounds can float</h3><p>When a word starts with a vowel, its mark can be written in the space before the first consonant. A centered bullet is optional, not required.</p><strong class="step-inline">AZAN → [A]Z[AA]N</strong></article>
+        <article class="step-card"><span class="step-number">02</span><h3>Mark the vowel</h3><p>Use the actual vertical, caret, arch or slash shape. The tone goes above or below its consonant. I is a short slash, EE is twice as long, and AOI is one continuous /\/ mark.</p><strong class="step-inline">S[I]T ≠ S[EE]D</strong></article>
+        <article class="step-card"><span class="step-number">03</span><h3>Initial sounds can float</h3><p>When a word starts with a vowel, its mark can be written in the space before the first consonant. A centered bullet is optional, not required. Short A is otherwise implicit in generated words; standalone A remains visible.</p><strong class="step-inline">AZAN → [A]Z[AA]N</strong></article>
         <article class="step-card"><span class="step-number">04</span><h3>Keep sounds joined</h3><p>BH uses B', unvoiced TH uses T', and voiced TH uses D'—each as a single letter form. SH and CH use the handwritten drooping-c stroke.</p><strong class="step-inline">BHARAT → B'[AA]RT</strong></article>
       </div>
       <div class="rules-note"><span class="rules-note-icon">✳</span><div><strong>Official vs. estimated</strong><p>Notebook examples are preserved exactly. The remaining English words use a small built-in pronunciation list or a marked heuristic. The converter does not pretend a guessed word is a confirmed SAWT rule. <b>-MENT and -LY remain unapproved</b>, so no extra glyphs are invented for them.</p></div></div>
@@ -202,7 +245,7 @@
       <label class="modal-field"><span>Letter / glyph units <small>(comma-separated)</small></span><input id="edit-units" spellcheck="false" placeholder="B',R,T" required></label>
       <label class="modal-field"><span>Vowel tones <small>(TONE@position, use @start for initial)</small></span><input id="edit-marks" spellcheck="false" placeholder="AA@1, A@start"></label>
       <label class="modal-field"><span>Confirmed modifier</span><select id="edit-suffix"><option value="">None</option><option value="+">+  (-ING)</option><option value="!">!  (-NG)</option><option value="#">#  (-TION)</option></select></label>
-      <p class="modal-hint">Use only known SAWT units and the 13 source vowel IDs. Position 1 means the first consonant glyph; @start means a vowel before the word.</p>
+      <p class="modal-hint">Use only known SAWT units and the 13 handwritten vowel IDs. Position 1 means the first consonant glyph; @start means a vowel before the word.</p>
       <div class="modal-error" id="edit-error" role="alert" hidden></div>
       <div class="modal-actions"><button type="button" class="utility-button" id="reset-word">Reset word</button><button type="button" class="button button-primary" id="save-word">Save correction</button></div>
     </form>

@@ -10,7 +10,7 @@ const FALLBACK_VOWELS = {
   aa:["AA"], ee:["EE"], ea:["EE"], ie:["EE"],
   oo:["U"], ou:["AU"], ow:["AU"], au:["AO"], aw:["AO"],
   ai:["E"], ay:["E"], ey:["E"], oa:["O"], oe:["O"],
-  oi:["AO","I"], oy:["AO","I"], ue:["OO"], iu:["YU"], iyu:["YU"],
+  oi:["AOI"], oy:["AOI"], ue:["OO"], iu:["YU"], iyu:["YU"],
   a:["AE"], e:["E"], i:["I"], o:["AO"], u:["A"], y:["AI"]
 };
 const LETTERS = /[a-z]/;
@@ -59,6 +59,9 @@ function assembleFromPhones(original, phones, options) {
     if (isVowelPhone(sequence[i])){
       const tones=toneForPhone(sequence[i]);
       for (const tone of (Array.isArray(tones) ? tones : [tones])) {
+        // A is implicit within generated words; the standalone article A remains marked.
+        // Source-confirmed examples such as AZAN are handled by NOTEBOOK first.
+        if (tone === "A" && lower !== "a") continue;
         if (VOWEL_BY_ID[tone]) marks.push({tone,anchor:lastConsonant});
       }
       continue;
@@ -115,7 +118,10 @@ function parseFallback(original,options) {
       if (group.length===1 && i+2===word.length && word[i+1]==="e") {
         ids=group==="i"?["AI"]:group==="o"?["O"]:group==="a"?["E"]:ids;
       }
-      for(const tone of ids) marks.push({tone,anchor:lastConsonant});
+      for(const tone of ids) {
+        if (tone === "A" && word !== "a") continue;
+        marks.push({tone,anchor:lastConsonant});
+      }
       i+=group.length;continue;
     }
     if (LETTERS.test(ch)) {
