@@ -282,10 +282,28 @@ export function exportReadingSvg(plans,opts={}){
       }
     }
   }
+  function writeProtectedText(value,bold){
+    // Preserve each intact line as one SVG text node whenever it fits;
+    // xml:space="preserve" also preserves interior spaces on copy/paste.
+    const lines=String(value).split(/\r\n|\r|\n/);
+    lines.forEach((line,index)=>{
+      if(index)nextLine();
+      const width=Array.from(line).length*10.3;
+      if(width>pageWidth-2*margin){writeText(line,bold);return;}
+      if(!line)return;
+      ensureRoom(width);
+      if(bold)shapes+='<rect x="'+(x-3)+'" y="'+(y+12)+'" width="'+(width+6)+
+        '" height="35" rx="5" fill="#28485a"/>';
+      shapes+='<text x="'+x+'" y="'+(y+36)+'" font-family="Inter,Arial,sans-serif" '+
+        'font-size="19" font-weight="'+(bold?"800":"400")+'" xml:space="preserve" '+
+        'fill="'+(bold?"#fff2c0":"#f8f5ff")+'">'+escapeHTML(line)+'</text>';
+      x+=width;
+    });
+  }
   for(const part of plans){
     if(part.kind==="space"){writeText(part.original);continue;}
     if(part.kind==="punct"){writeText(part.original);continue;}
-    if(part.kind==="literal"||part.kind==="bold"){writeText(part.text,part.kind==="bold");continue;}
+    if(part.kind==="literal"||part.kind==="bold"){writeProtectedText(part.text,part.kind==="bold");continue;}
     if(part.kind==="carrier"){
       const inner=carrierSvg(part).replace(/^.*?<svg[^>]*>/,"").replace(/<\/svg>$/,"");
       ensureRoom(96*scale);
